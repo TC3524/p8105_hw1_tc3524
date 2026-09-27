@@ -1,0 +1,85 @@
+---
+title: "HW01"
+author: "Hubert Chang"
+date: "2026-09-26"
+output: github_document
+---
+
+
+#Problem 1
+
+```{r setup, include=FALSE}
+library (tidyverse)
+data("penguins", package = "palmerpenguins")
+penguins = janitor:: clean_names(penguins)
+```
+
+##Summary 
+
+`r skimr::skim(penguins)`
+
+`r names(penguins)` varaible names
+
+`r min(pull(penguins, year))` data year span
+`r max(pull(penguins, year))`
+
+`r nrow(penguins)` number of rows
+`r ncol(penguins)` number of columns
+
+`r round(mean(pull(penguins, flipper_length_mm), na.rm = TRUE ), digits = 2)` mean of flipper length in mm
+
+### scatter plot of flipper length
+
+```{r scatterplot}
+
+ggplot (penguins, aes (x = bill_length_mm, y = flipper_length_mm, color = species)) + geom_point()
+ggsave ("hw01_scatterplot.png")
+
+```
+
+#Problem 2
+
+## Creating Data Frame
+
+```{r create_df}
+library (tidyverse)
+
+set.seed(1234)
+
+problem2_df = tibble( 
+  norm_samp = rnorm(10), #random sampe of size of 10
+  norm_gt_zero = norm_samp > 0, #indicating that elements of the sample are greater than 0
+  char_vec = c("Green", "Black", "Oolong", "Chamomile", "Matcha", "Chai", "Masala", "Herbal", "Hibiscus", "Ginger"), #character vector of length 10 characters
+  factor_vec = factor(c("low", "medium", "high", "high", "medium", "low", "medium", "high", "high", "low")) #factor vector of 10 length that show 3 different levels
+)
+
+problem2_df
+```
+
+#calculating the mean of the variables
+
+``` {r try_mean, warning = TRUE}
+
+mean (pull (problem2_df, norm_samp))
+mean (pull (problem2_df, norm_gt_zero))
+mean (pull (problem2_df, char_vec))
+mean (pull (problem2_df, factor_vec))
+```
+
+##
+The mean of the sample is -0.38 this worked because it is a numerical value 
+The mean for logical vector indicator is 0.4 this worked because it is also a numerical value
+The mean for character value is NA because it is not a numerical value
+The mean for factor vector is also NA because it is not a numerical value.
+
+
+### Converting character values into numeric value
+
+```{r result='hide', warning = FALSE}
+as.numeric (pull(problem2_df, norm_gt_zero))
+as.numeric (pull(problem2_df, char_vec))
+as.numeric (pull(problem2_df, factor_vec))
+```
+When using as.numeric, we could see that it worked on logical vector and factor vector, but it would not work for character vector. It does explain what happens when taking the mean. In logical vector, it calculates the mean of 1 and 0s to see if they are true or false, so it can calculate to see the proportions of them. In character vector, it is text strings so it cannot be converted to number. In factor vector, it made them into categories in terms of numbers, so they do not calculate since it is a category. 
+
+
